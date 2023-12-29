@@ -72,8 +72,6 @@ def print_tree(node, depth):
         for k, v in node.items():
             print(indent + k + ":")
             print_tree(v, depth+1)
-    elif isinstance(node, list):
-        print(indent + node)
     else:
         print(indent + str(node))
 
