@@ -1,0 +1,13 @@
+0 3 tomaz
+3 6 jure
+6 9 jan
+------
+0 1 tomaz
+1 2 tomaz
+2 3 tomaz
+3 4 jure
+4 5 jure
+5 6 jure
+6 7 jan
+7 8 jan
+======

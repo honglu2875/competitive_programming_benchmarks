@@ -1,4 +1,3 @@
-import requests
 import pathlib
 import shutil
 import tempfile
@@ -6,7 +5,7 @@ import json
 import os
 import subprocess
 import signal
-from concurrent.futures import ThreadPoolExecutor
+from concurrent.futures import ThreadPoolExecutor, Future
 from functools import partial
 
 
@@ -27,6 +26,57 @@ def run_with_timeout(cmd, timeout_sec, cwd=None):
     except subprocess.TimeoutExpired:
         os.killpg(os.getpgid(process.pid), signal.SIGTERM)
         return -1, None, None
+
+def evaluate(tree: dict, pool: ThreadPoolExecutor) -> dict:
+    """Recursively look for list of strings and execute each string as a python program.
+
+    Note: key `_meta` will be ignored.
+    It returns a dict with the same structure as tree except leaves that are lists of strings.
+    Leaves that are lists of strings are replaced by a tuple (correct, total) describing the
+    execution results.
+    """
+    result = {}
+    for k, v in tree.items():
+        if k == '_meta':
+            result[k] = v
+            continue
+        if isinstance(v, list):
+            if all(isinstance(elem, str) for elem in v):
+                result[k] = [pool.submit(partial(_test, idx=k), elem) for elem in v]
+        elif isinstance(v, dict):
+            result[k] = evaluate(v, pool)
+        else:
+            result[k] = v
+    return result
+
+
+def expand_future(node):
+    """Recursively await and expand Future objects"""
+    if isinstance(node, Future):
+        return node.result()
+    elif isinstance(node, dict):
+        result = {}
+        for k, v in node.items():
+            result[k] = expand_future(v)
+        return result
+    elif isinstance(node, list):
+        return [expand_future(v) for v in node]
+    else:
+        return node
+
+
+def print_tree(node, depth):
+    """Recursively print the tree"""
+    indent = "  " * depth
+    if isinstance(node, dict):
+        for k, v in node.items():
+            print(indent + k + ":")
+            print_tree(v, depth+1)
+    elif isinstance(node, list):
+        print(indent + node)
+    else:
+        print(indent + str(node))
+
 
 def _test(code: str, idx: int | str):
     folder_path = f"{path_prefix}/secret_{idx}"
@@ -80,16 +130,10 @@ def main():
         res = {}
         codes = json.load(open(str(path)))
         with ThreadPoolExecutor() as pool:
-            for k, texts in codes.items():
-                res[k] = []
-                for text in texts:
-                    res[k].append(pool.submit(partial(_test, idx=k), text))
-
-            for k in codes:
-                res[k] = [f.result() for f in results[k]]
-                print(res[k])
-
-        results[path.name.replace("_codes.json", "")] = res
+            res = evaluate(codes, pool)
+            results[path.name.replace("_codes.json", "")] = res
+    results = expand_future(results)
+    print_tree(results, depth=0)
 
     json.dump(results, open("results.json", "w"))
 

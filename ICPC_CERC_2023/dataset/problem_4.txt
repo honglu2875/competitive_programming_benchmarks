@@ -1,0 +1,87 @@
+You are one of the people on-call for a high-availability service that offers users to solve
+programming tasks. As an organized team, you have an on-call schedule specifying who
+is responsible for the service at which time. A colleague sends you a new schedule, and
+you want to make sure that everyone has the same amount of on-call time as before, or
+print any differences.
+The on-call schedule is specified with lines of form s_i e_i t_i, where s_i and e_i represent
+the start and end offsets of the on-call shift for a teammate t_i from some start hour.
+
+Given a sample schedule
+0 7 jan
+7 14 tomaz
+14 20 jure
+20 24 jan
+24 25 tomaz
+25 26 jure
+we can see that jan is on-call for the first 7 hours (hour 0, 1, 2, 3, 4, 5, and 6), tomaz for
+next 7, . . . In total, jan is on-call for 11 hours, tomaz for 8 and jure for 7.
+
+## Input data
+The input contains two schedules separated by a horizontal line ------. Each schedule
+contains one or more lines of form s_i e_i t_i, where integers s_i and e_i specify that teammate
+t_i is on-call for hours from s_i up to and excluding e_i. A final line ====== is printed after
+the second schedule.
+
+## Input limits
+For each schedule, the following holds:
+• s_1 = 0
+• s_i < e_i
+• s_{i+1} = e_i
+• e_i ≤ 1000
+• Name t_i will consist of lowercase letters from the English alphabet.
+• 3 ≤ |t_i| ≤ 20
+
+## Output data
+Output the differences between two schedules, in form t_i ±d_i, where d_i is the difference
+between the second and the first schedule for the teammate t_i. The output should be
+sorted alphabetically by teammates’ names and teammates with no differences should be
+omitted, otherwise the difference should be printed with a + or a - sign. If no differences
+are found, print “No differences found.” (without the quotes).
+
+## Sample input 1
+0 7 jan
+7 14 tomaz
+14 20 jure
+20 24 jan
+24 25 tomaz
+25 26 jure
+------
+0 9 tomaz
+9 20 jan
+20 26 jure
+======
+
+## Sample output 1
+jure -1
+tomaz +1
+
+## Sample input 2
+0 7 nino
+7 14 bgs
+14 21 ines
+------
+0 7 ines
+7 14 nino
+14 21 bgs
+======
+
+## Sample output 2
+No differences found.
+
+## Sample input 3
+0 3 vid
+3 6 maks
+6 9 janez
+------
+0 1 vid
+1 2 vid
+2 3 vid
+3 4 maks
+4 5 maks
+5 6 maks
+6 7 janez
+7 8 janez
+======
+
+## Sample output 3
+janez -1
