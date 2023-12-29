@@ -27,7 +27,7 @@ def run_with_timeout(cmd, timeout_sec, cwd=None):
         os.killpg(os.getpgid(process.pid), signal.SIGTERM)
         return -1, None, None
 
-def evaluate(tree: dict, pool: ThreadPoolExecutor, prefix: str = "") -> dict:
+def evaluate(tree: dict, pool: ThreadPoolExecutor, prefix: str = "", idx: int | str = "") -> dict:
     """Recursively look for list of strings and execute each string as a python program.
 
     Note: key `_meta` will be ignored.
@@ -42,9 +42,9 @@ def evaluate(tree: dict, pool: ThreadPoolExecutor, prefix: str = "") -> dict:
             continue
         if isinstance(v, list):
             if all(isinstance(elem, str) for elem in v):
-                result[k] = [pool.submit(partial(_test, idx=k, prefix=prefix), elem) for elem in v]
+                result[k] = [pool.submit(partial(_test, idx=idx or k, prefix=prefix), elem) for elem in v]
         elif isinstance(v, dict):
-            result[k] = evaluate(v, pool)
+            result[k] = evaluate(v, pool, prefix=prefix, idx=idx or k)
         else:
             result[k] = v
     return result
