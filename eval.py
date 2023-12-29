@@ -27,7 +27,7 @@ def run_with_timeout(cmd, timeout_sec, cwd=None):
         os.killpg(os.getpgid(process.pid), signal.SIGTERM)
         return -1, None, None
 
-def evaluate(tree: dict, pool: ThreadPoolExecutor) -> dict:
+def evaluate(tree: dict, pool: ThreadPoolExecutor, prefix: str = "") -> dict:
     """Recursively look for list of strings and execute each string as a python program.
 
     Note: key `_meta` will be ignored.
@@ -42,7 +42,7 @@ def evaluate(tree: dict, pool: ThreadPoolExecutor) -> dict:
             continue
         if isinstance(v, list):
             if all(isinstance(elem, str) for elem in v):
-                result[k] = [pool.submit(partial(_test, idx=k), elem) for elem in v]
+                result[k] = [pool.submit(partial(_test, idx=k, prefix=prefix), elem) for elem in v]
         elif isinstance(v, dict):
             result[k] = evaluate(v, pool)
         else:
@@ -78,8 +78,8 @@ def print_tree(node, depth):
         print(indent + str(node))
 
 
-def _test(code: str, idx: int | str):
-    folder_path = f"{path_prefix}/secret_{idx}"
+def _test(code: str, idx: int | str, prefix: str = "") -> tuple:
+    folder_path = f"{prefix}/{path_prefix}/secret_{idx}"
     # Loop through all filenames under the folder
     count = 0
     total = 0
@@ -130,8 +130,9 @@ def main():
         res = {}
         codes = json.load(open(str(path)))
         with ThreadPoolExecutor() as pool:
-            res = evaluate(codes, pool)
-            results[path.name.replace("_codes.json", "")] = res
+            name = path.name.replace("_codes.json", "")
+            res = evaluate(codes, pool, prefix=name)
+            results[name] = res
     results = expand_future(results)
     print_tree(results, depth=0)
 
