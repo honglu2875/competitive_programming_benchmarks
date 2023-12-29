@@ -29,7 +29,7 @@ def _contain_tests(p: pathlib.Path, order: str):
     return (p / f"secret_{order}").is_dir()
 
 def _ensure_server():
-    url = "http://localhost:5000/health"
+    url = "http://localhost:8000/health"
     try:
         r = requests.get(url)
         if r.ok:
