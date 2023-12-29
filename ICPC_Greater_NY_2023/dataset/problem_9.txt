@@ -1,0 +1,77 @@
+A palindrome is a word, number, phrase, or other sequence of characters which reads the same backward
+as forward, such as madam or racecar or 1881. Phrase palindromes ignore capitalization, punctuation, and
+word boundaries. For example:
+Madam I'm Adam.
+
+Morse code is a method used in telecommunication to encode text characters as standardized sequences of
+two different signal durations, called dots and dashes, or dits and dahs. Morse code is named after Samuel
+Morse, one of the inventors of the telegraph. The International Morse code for letters and digits (the code
+does not distinguish between upper and lower case) is:
+A	.-	B	-...
+C	-.-.	D	-..
+E	.	F	..-.
+G	--.	H	....
+I	..	J	.---
+K	-.-	L	.-..
+M	--	N	-.
+O	---	P	.--.
+Q	--.-	R	.-.
+S	...	T	-
+U	..-	V	...-
+W	.--	X	-..-
+Y	-.--	Z	--..
+0	-----	1	.----
+2	..---	3	...--
+4	....-	5	.....
+6	-....	7	--...
+8	---..	9	----.
+
+A word, number or phrase is a Morse Code Palindrome if the morse code for the letters and digits in the
+word, number or phrase reads the same backwards or forwards (ignoring spaces between character codes.
+
+For example:
+159
+.---- ..... ----.
+
+Footstool
+..-. --- --- - ... - --- --- .-..
+
+Write a program which takes as input a string and determines the smallest number of characters to append
+to the end of the word to make it a Morse Code Palindrome.
+
+## Input
+Input consists of a single line containing a string of up to 30 capital letters and/or digits possibly including
+spaces and punctuation.
+
+## Output
+The output consists of a single line.
+If the input string is already a Morse Code Palindrome, output the digit 0. Otherwise output the number of
+characters to append, followed by a single space followed by a string containing capital letters and/or digits
+to append to make the input a Morse Code Palindrome.
+Since there may be more than one valid answer (see samples 2 and 3 below), a result will be judged correct
+if the number of appended characters is less than or equal to the judges’ answer and the input followed by
+your output is a Morse Code Palindrome.
+
+## Sample Input 1
+FOOT
+
+## Sample Output 1
+1 L
+
+## Sample Input
+FOOTS
+
+## 2 Sample Output 2
+3 0QI
+
+## Sample Input 3
+FOOTS
+
+## Sample Output 3
+3 0GD
+
+## Sample Input 4
+FOOTSTOOL
+
+## Sample Output 4
+0

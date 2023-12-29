@@ -1,0 +1,63 @@
+Every non-negative integer n may be written as the sum of the squares of four integers:
+n = a^2 + b^2 + c^2 + d^2
+By allowing subtraction, n may be written in many more ways; in fact infinitely many.
+In this problem you will count the number of different ways to express an input n as a sum or difference of
+four squares with several restrictions:
+First, we need to decide what different means.
+Any of a, b, c, d may be replaced by its negative. We do not want to count these as different so we will only
+count different squared values.
+Reordering a, b, c, d does not give a different representation.
+So, we define a plus minus four square representation of a non-negative integer n as a sequence of four
+perfect squares in non-increasing order with plus or minus signs whose computation results in n.
+In addition, we add the following restrictions:
+• The first square must be no more than n to avoid having infinitely many representations.
+• If the same square appears multiple times all appearances must be preceded by (a possibly implicit)
+plus sign or all must be preceded by a minus sign. This avoids something like:
+64 + 36 - 36 + 0
+• A square of zero must be preceded by a plus sign.
+
+For example, the only sums of squares which add to 64 are:
+64 + 0 + 0 + 0
+16 + 16 + 16 + 16
+
+If we allow minus signs with the above additional restrictions we have the following which each sum up to
+64:
+64 + 25 - 16 - 9
+64 - 25 + 16 + 9
+64 + 0 + 0 + 0
+49 + 49 - 25 - 9
+49 + 36 - 25 + 4
+49 + 25 - 9 - 1
+49 + 16 - 1 + 0
+36 + 36 - 9 + 1
+36 + 36 - 4 - 4
+36 + 25 + 4 - 1
+36 + 16 + 16 - 4
+16 + 16 + 16 + 16
+Write a program which takes as input a non-negative integer n and outputs a count of the number of different
+four square plus minus representations of n.
+
+## Input
+Input consists of one line containing a single non-negative decimal integer (0 < n ≤ 5000).
+
+## Output
+There is one line of output that consists of a single decimal integer giving a count of the number of different
+four square plus minus representations of n
+
+## Sample Input 1
+64 
+
+## Sample Output 1
+12
+
+## Sample Input 2
+65
+
+## Sample Output 2
+10
+
+## Sample Input 3
+2023
+
+## Sample Output 3
+245
